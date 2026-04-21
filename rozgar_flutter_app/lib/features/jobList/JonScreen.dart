@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 import 'controller/JobListController.dart';
 
 class JobScreen extends ConsumerWidget {
@@ -9,146 +10,176 @@ class JobScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final jobsAsync = ref.watch(jobProvider);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Find Jobs"),
-        centerTitle: true,
+      backgroundColor: const Color(0xffF4F6FF),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _header(),
+            _categories(),
+            Expanded(
+              child: jobsAsync.when(
+                data: (jobs) => ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: jobs.length,
+                  itemBuilder: (context, index) {
+                    final job = jobs[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 8)
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(job.name,
+                                    style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade100,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(job.intensive),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(job.profession,
+                              style: const TextStyle(color: Colors.black54)),
+                          const SizedBox(height: 10),
+                          Row(children: [
+                            const Icon(Icons.location_on, size: 18, color: Colors.red),
+                            const SizedBox(width: 4),
+                            Text(job.location),
+                          ]),
+                          const SizedBox(height: 8),
+                          Row(children: [
+                            const Icon(Icons.calendar_month, size: 18),
+                            const SizedBox(width: 4),
+                            Text('${job.days} days'),
+                          ]),
+                          const SizedBox(height: 12),
+                          Text('₹${job.income}/month',
+                              style: const TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                error: (e, _) => Center(child: Text('Error: $e')),
+                loading: () => const Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ],
+        ),
       ),
-      body: jobsAsync.when(
-        data: (jobs) {
-          if (jobs.isEmpty) {
-            return const Center(
-              child: Text("No Jobs Found"),
-            );
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 2,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          switch(index){
+            case 0  : context.go(AppConstants.jobs);
+            break;
+            case 1  : context.go(AppConstants.skills);
+            break;
+            case 2  : context.go(AppConstants.jobs);
+            break;
+            case 3  : context.go(AppConstants.jobs);
+            break;
+            default: return;
+
           }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Jobs'),
+          BottomNavigationBarItem(icon: Icon(Icons.build), label: 'Skills'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
 
-          return ListView.builder(
-            itemCount: jobs.length,
-            padding: const EdgeInsets.all(10),
-            itemBuilder: (context, index) {
-              final job = jobs[index];
+  Widget _header() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: const BoxDecoration(
+        color: Color(0xff2348F5),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          const Text('Namaste 🙏', style: TextStyle(color: Colors.white70)),
+          const SizedBox(height: 4),
+          const Text('Navin Kumar',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const TextField(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                icon: Icon(Icons.search),
+                hintText: 'Search jobs by city or type...',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-              return Card(
-                elevation: 4,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      /// Job Name
-                      Text(
-                        job.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      /// Profession
-                      Row(
-                        children: [
-                          const Icon(Icons.work_outline,
-                              size: 18),
-                          const SizedBox(width: 6),
-                          Text(job.profession),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// Location
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on,
-                              size: 18),
-                          const SizedBox(width: 6),
-                          Text(job.location),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// Income
-                      Row(
-                        children: [
-                          const Icon(Icons.currency_rupee,
-                              size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            "${job.income}/month",
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// Working Days
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_month,
-                              size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            "${job.days} days/week",
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// Experience
-                      Row(
-                        children: [
-                          const Icon(Icons.star_border,
-                              size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            "${job.experience} years exp",
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      /// Work Needed
-                      Text(
-                        "Work: ${job.workNeeded}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      /// Company / Intensive
-                      Align(
-                        alignment:
-                        Alignment.centerRight,
-                        child: Chip(
-                          label: Text(job.intensive),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+  Widget _categories() {
+    final items = ['All Jobs', 'Near Me', 'Construction', 'Textile'];
+    return SizedBox(
+      height: 70,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(12),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final active = index == 1;
+          return Container(
+            margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            decoration: BoxDecoration(
+              color: active ? const Color(0xff2348F5) : Colors.white,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Center(
+              child: Text(items[index], style: TextStyle(color: active ? Colors.white : Colors.black87)),
+            ),
           );
         },
-        error: (e, _) => Center(
-          child: Text("Error: $e"),
-        ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:rozgar_flutter_app/features/jobList/JonScreen.dart';
+import 'package:rozgar_flutter_app/features/skills/skillsScreen.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
 import '../features/authenticate/LoginScreen.dart';
@@ -41,6 +42,23 @@ class AppRouter {
       ),
 
       /// Home
+      GoRoute(
+        path: AppConstants.jobs,
+        builder: (context, state) =>
+        const JobScreen(),
+      ),
+      /// profile
+      GoRoute(
+        path: AppConstants.skills,
+        builder: (context, state) =>
+        const SkillsPage(),
+      ),
+      /// Skills
+      GoRoute(
+        path: AppConstants.jobs,
+        builder: (context, state) =>
+        const JobScreen(),
+      ), /// Setting
       GoRoute(
         path: AppConstants.jobs,
         builder: (context, state) =>

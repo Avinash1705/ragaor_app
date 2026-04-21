@@ -7,5 +7,7 @@ class AppConstants {
   static String signup = "/signup";
   static String reset = "/reset";
   static String jobs = "/jobs";
+  static String profile = "/profile";
+  static String skills = "/skills";
 
 }
