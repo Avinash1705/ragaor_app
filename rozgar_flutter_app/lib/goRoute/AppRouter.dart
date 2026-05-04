@@ -1,11 +1,14 @@
 import 'package:go_router/go_router.dart';
-import 'package:rozgar_flutter_app/features/jobList/JonScreen.dart';
+import 'package:rozgar_flutter_app/features/jobList/JobScreen.dart';
+import 'package:rozgar_flutter_app/features/mainScreen/MainScreen.dart';
+import 'package:rozgar_flutter_app/features/profile/profileScreen.dart';
 import 'package:rozgar_flutter_app/features/skills/skillsScreen.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
 import '../features/authenticate/LoginScreen.dart';
 import '../features/authenticate/ResetPasswordScreen.dart';
 import '../features/authenticate/SignUpScreen.dart';
+import '../features/profile/editProfileScreen.dart';
 import '../features/spash/SpashScreen.dart';
 
 class AppRouter {
@@ -25,45 +28,62 @@ class AppRouter {
         path: AppConstants.login,
         builder: (context, state) =>
         const LoginScreen(),
+        routes: [
+          /// Reset Password
+          GoRoute(
+            path: AppConstants.reset,
+            builder: (context, state) =>
+            const ResetPasswordScreen(),
+          ),
+          /// Signup
+          GoRoute(
+            path: AppConstants.signup,
+            builder: (context, state) =>
+            const SignUpScreen(),
+          ),
+        ]
       ),
 
-      /// Signup
-      GoRoute(
-        path: AppConstants.signup,
-        builder: (context, state) =>
-        const SignUpScreen(),
-      ),
 
-      /// Reset Password
-      GoRoute(
-        path: AppConstants.reset,
-        builder: (context, state) =>
-        const ResetPasswordScreen(),
-      ),
 
       /// Home
       GoRoute(
-        path: AppConstants.jobs,
+        path: AppConstants.mainScreen,
         builder: (context, state) =>
-        const JobScreen(),
+        const MainScreen(),
+        routes: [
+          /// Home
+          GoRoute(
+            path: AppConstants.jobs,
+            builder: (context, state) =>
+            const JobScreen(),
+          ),
+          /// profile
+          GoRoute(
+            path: AppConstants.skills,
+            builder: (context, state) =>
+            const SkillsPage(),
+          ),
+          /// Skills
+          GoRoute(
+              path: AppConstants.profile,
+              builder: (context, state) =>
+              const ProfileScreen(),
+              routes: [
+                GoRoute(path: AppConstants.editProfile,builder: (context,state) => EditProfileScreen())
+              ]
+          ), /// Setting
+          GoRoute(
+            path: AppConstants.jobs,
+            builder: (context, state) =>
+            const JobScreen(),
+          ),
+        ]
       ),
-      /// profile
-      GoRoute(
-        path: AppConstants.skills,
-        builder: (context, state) =>
-        const SkillsPage(),
-      ),
-      /// Skills
-      GoRoute(
-        path: AppConstants.jobs,
-        builder: (context, state) =>
-        const JobScreen(),
-      ), /// Setting
-      GoRoute(
-        path: AppConstants.jobs,
-        builder: (context, state) =>
-        const JobScreen(),
-      ),
+
+
+      
+
     ],
   );
 }

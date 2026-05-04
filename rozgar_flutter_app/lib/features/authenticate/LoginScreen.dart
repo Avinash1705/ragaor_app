@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rozgar_flutter_app/goRoute/AppRoute.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
+
+import '../../sessionManager/SessionManager.dart';
+import 'controllers/LoginController.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +16,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool hidePassword = true;
+  final authController = LoginController();
+  final session = SessionManager();
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -28,6 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+   loginUser(String phone,String pass) async {
+    final result = await authController.login(
+      phone: phone,
+      password: pass,
+    );
+
+    if (result != null && result.status) {
+      print("Token: ${result.token}");
+      print("User: ${result.data.username}");
+      session.saveLogin(result);
+      context.go(AppConstants.mainScreen);
+    } else {
+      print("Login failed");
+    }
+  }
+
   void login() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
@@ -38,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       /// API CALL HERE
-      context.go(AppConstants.jobs);
+      context.go(AppConstants.mainScreen);
     }
   }
 
@@ -301,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           .centerRight,
                       child: TextButton(
                         onPressed: () {
-                          context.go(AppConstants.reset);
+                          context.push(AppRoute.resetRoute);
                         },
                         child: const Text(
                           "Forgot Password?",
@@ -334,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 30),
                           ),
                         ),
-                        onPressed: login,
+                        onPressed:() => loginUser(mobileController.text,passwordController.text),
                         child: const Text(
                           "Sign In",
                           style:
@@ -353,7 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 30),
 
                     InkWell(
-                      onTap: () =>  context.go(AppConstants.signup),
+                      onTap: () =>  context.push(AppRoute.signupRoute),
                       child: Center(
                         child: RichText(
                           text:

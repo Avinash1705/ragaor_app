@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rozgar_flutter_app/features/jobList/JonScreen.dart';
+import 'package:rozgar_flutter_app/features/jobList/JobScreen.dart';
+import 'package:rozgar_flutter_app/goRoute/AppRoute.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
 
@@ -37,7 +38,7 @@ class _SplashScreenState
     _controller.forward();
 
     Timer(const Duration(seconds: 2), () {
-    context.go(AppConstants.login);
+    context.go(AppRoute.loginRoute);
     });
   }
 

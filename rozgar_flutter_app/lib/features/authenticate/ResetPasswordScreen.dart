@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rozgar_flutter_app/goRoute/AppRoute.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
 import 'OtpScreen.dart';
@@ -70,7 +71,7 @@ class _ResetPasswordScreenState
       } else {
         snack(
             "Password Reset Success");
-          context.go(AppConstants.login);
+          context.go(AppRoute.loginRoute);
       }
     }
   }

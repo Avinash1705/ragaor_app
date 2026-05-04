@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 import 'controller/JobListController.dart';
 
 class JobScreen extends ConsumerWidget {
@@ -88,31 +86,6 @@ class JobScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          switch(index){
-            case 0  : context.go(AppConstants.jobs);
-            break;
-            case 1  : context.go(AppConstants.skills);
-            break;
-            case 2  : context.go(AppConstants.jobs);
-            break;
-            case 3  : context.go(AppConstants.jobs);
-            break;
-            default: return;
-
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Jobs'),
-          BottomNavigationBarItem(icon: Icon(Icons.build), label: 'Skills'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
       ),
     );
   }

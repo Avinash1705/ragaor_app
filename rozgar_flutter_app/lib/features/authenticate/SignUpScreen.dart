@@ -1,464 +1,200 @@
 import 'package:flutter/material.dart';
 
-
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() =>
-      _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState
-    extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final nameController =
-  TextEditingController();
-  final mobileController =
-  TextEditingController();
-  final emailController =
-  TextEditingController();
-  final passwordController =
-  TextEditingController();
+  final nameController = TextEditingController();
+  final mobileController = TextEditingController();
+  final passwordController = TextEditingController();
+  final otpController = TextEditingController();
 
-  bool hidePassword = true;
-  bool agreeTerms = true;
+  int currentStep = 1;
 
-  final blue =
-  const Color(0xff0d5cff);
+  final blue = const Color(0xff0d5cff);
 
-  void signUp() {
-    if (!_formKey.currentState!
-        .validate()) return;
+  // 🔥 STEP 1 → SEND OTP
+  void sendOtp() async {
+    if (!_formKey.currentState!.validate()) return;
 
-    if (!agreeTerms) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        const SnackBar(
-          content: Text(
-              "Accept Terms & Privacy Policy"),
-        ),
+    // 👉 CALL API HERE
+    // await Api.sendOtp(mobileController.text);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("OTP Sent")),
+    );
+
+    setState(() {
+      currentStep = 2;
+    });
+  }
+
+  // 🔥 STEP 2 → VERIFY OTP + SIGNUP
+  void verifyOtp() async {
+    String otp = otpController.text.trim();
+
+    if (otp.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Enter valid OTP")),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      const SnackBar(
-        content:
-        Text("Account Created"),
-      ),
-    );
+    // 👉 VERIFY OTP API
+    // final res = await Api.verifyOtp(mobileController.text, otp);
+
+    bool isValid = true; // replace with API response
+
+    if (isValid) {
+      // 👉 SIGNUP API
+      // await Api.signup(
+      //   nameController.text,
+      //   mobileController.text,
+      //   passwordController.text,
+      // );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Signup Successful")),
+      );
+
+      setState(() {
+        currentStep = 3;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid OTP")),
+      );
+    }
   }
 
   @override
   void dispose() {
     nameController.dispose();
     mobileController.dispose();
-    emailController.dispose();
     passwordController.dispose();
+    otpController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-      Colors.white,
-      body:
-      SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              /// TOP BLUE HEADER
-              Container(
-                width:
-                double.infinity,
-                padding:
-                const EdgeInsets.only(
-                  top: 60,
-                  left: 24,
-                  right: 24,
-                  bottom: 50,
-                ),
-                decoration:
-                BoxDecoration(
-                  color: blue,
-                  borderRadius:
-                  const BorderRadius.only(
-                    bottomLeft:
-                    Radius.circular(
-                        70),
-                    bottomRight:
-                    Radius.circular(
-                        70),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+
+                const SizedBox(height: 50),
+
+                /// 🔥 STEP 1 → SIGNUP FORM
+                if (currentStep == 1)
+                  Column(
+                    children: [
+                      title("FULL NAME"),
+                      TextFormField(
+                        controller: nameController,
+                        decoration: field("Enter name", Icons.person),
+                        validator: (v) =>
+                        v!.isEmpty ? "Enter name" : null,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      title("MOBILE"),
+                      TextFormField(
+                        controller: mobileController,
+                        maxLength: 10,
+                        keyboardType: TextInputType.phone,
+                        decoration: field("9876543210", Icons.phone),
+                        validator: (v) =>
+                        v!.length != 10 ? "Invalid mobile" : null,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      title("PASSWORD"),
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: field("Password", Icons.lock),
+                        validator: (v) =>
+                        v!.length < 6 ? "Min 6 chars" : null,
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      button("Create Account →", sendOtp),
+                    ],
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 36,
-                          width: 36,
-                          decoration:
-                          BoxDecoration(
-                            color: Colors
-                                .white24,
-                            borderRadius:
-                            BorderRadius.circular(
-                                10),
-                          ),
-                          child:
-                          const Icon(
-                            Icons
-                                .keyboard_double_arrow_up,
-                            color: Colors
-                                .white,
-                          ),
-                        ),
-                        const SizedBox(
-                            width:
-                            10),
-                        const Text(
-                          "RozgarSetu",
-                          style:
-                          TextStyle(
-                            color: Colors
-                                .white,
-                            fontSize:
-                            24,
-                            fontWeight:
-                            FontWeight
-                                .bold,
-                          ),
-                        ),
-                      ],
-                    ),
 
-                    const SizedBox(
-                        height:
-                        28),
+                /// 🔥 STEP 2 → OTP SCREEN
+                if (currentStep == 2)
+                  Column(
+                    children: [
+                      title("ENTER OTP"),
+                      const SizedBox(height: 12),
 
-                    const Text(
-                      "Create\nAccount",
-                      style:
-                      TextStyle(
-                        color: Colors
-                            .white,
-                        fontSize:
-                        44,
-                        fontWeight:
-                        FontWeight
-                            .bold,
-                        height: 1,
+                      TextField(
+                        controller: otpController,
+                        maxLength: 6,
+                        keyboardType: TextInputType.number,
+                        decoration: field("Enter OTP", Icons.lock_clock),
                       ),
-                    ),
 
-                    const SizedBox(
-                        height:
-                        14),
+                      const SizedBox(height: 10),
 
-                    const Text(
-                      "Join thousands finding their dream job",
-                      style:
-                      TextStyle(
-                        color: Colors
-                            .white70,
-                        fontSize:
-                        17,
+                      Text(
+                        "OTP sent to ${mobileController.text}",
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                    ),
-                  ],
-                ),
-              ),
 
-              const SizedBox(
-                  height: 25),
+                      const SizedBox(height: 30),
 
-              Padding(
-                padding:
-                const EdgeInsets.symmetric(
-                  horizontal: 24,
-                ),
-                child: Column(
-                  children: [
-                    title(
-                        "FULL NAME"),
-                    const SizedBox(
-                        height:
-                        12),
-                    TextFormField(
-                      controller:
-                      nameController,
-                      decoration:
-                      field(
-                        "Navin Kumar",
-                        Icons
-                            .person_outline,
+                      button("Verify OTP →", verifyOtp),
+
+                      const SizedBox(height: 10),
+
+                      TextButton(
+                        onPressed: () {
+                          // 👉 Resend OTP API
+                          // Api.sendOtp(mobileController.text);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("OTP Resent")),
+                          );
+                        },
+                        child: const Text("Resend OTP"),
                       ),
-                      validator:
-                          (v) {
-                        if (v ==
-                            null ||
-                            v.isEmpty) {
-                          return "Enter full name";
-                        }
-                        return null;
-                      },
-                    ),
+                    ],
+                  ),
 
-                    const SizedBox(
-                        height:
-                        20),
-
-                    title(
-                        "MOBILE NUMBER"),
-                    const SizedBox(
-                        height:
-                        12),
-                    TextFormField(
-                      controller:
-                      mobileController,
-                      maxLength:
-                      10,
-                      keyboardType:
-                      TextInputType
-                          .phone,
-                      decoration:
-                      field(
-                        "9876543210",
-                        Icons.phone,
-                        counter:
-                        "${mobileController.text.length}/10",
+                /// 🔥 STEP 3 → SUCCESS
+                if (currentStep == 3)
+                  Column(
+                    children: const [
+                      Icon(Icons.check_circle,
+                          color: Colors.green, size: 80),
+                      SizedBox(height: 20),
+                      Text(
+                        "Account Created Successfully!",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
-                      onChanged:
-                          (_) {
-                        setState(
-                                () {});
-                      },
-                      validator:
-                          (v) {
-                        if (v ==
-                            null ||
-                            v.length !=
-                                10) {
-                          return "Enter valid mobile";
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(
-                        height:
-                        20),
-
-                    title(
-                        "EMAIL (OPTIONAL)"),
-                    const SizedBox(
-                        height:
-                        12),
-                    TextFormField(
-                      controller:
-                      emailController,
-                      decoration:
-                      field(
-                        "navin@example.com",
-                        Icons
-                            .mail_outline,
-                      ),
-                      validator:
-                          (v) {
-                        if (v !=
-                            null &&
-                            v.isNotEmpty &&
-                            !RegExp(
-                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                .hasMatch(
-                                v)) {
-                          return "Enter valid email";
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(
-                        height:
-                        20),
-
-                    title(
-                        "PASSWORD"),
-                    const SizedBox(
-                        height:
-                        12),
-                    TextFormField(
-                      controller:
-                      passwordController,
-                      obscureText:
-                      hidePassword,
-                      decoration:
-                      field(
-                        "Min. 8 characters",
-                        Icons.lock,
-                        suffix:
-                        IconButton(
-                          onPressed:
-                              () {
-                            setState(
-                                    () {
-                                  hidePassword =
-                                  !hidePassword;
-                                });
-                          },
-                          icon: Icon(
-                              hidePassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                        ),
-                      ),
-                      validator:
-                          (v) {
-                        if (v ==
-                            null ||
-                            v.length <
-                                8) {
-                          return "Minimum 8 characters";
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(
-                        height:
-                        12),
-
-                    /// TERMS
-                    Row(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-                      children: [
-                        Checkbox(
-                          value:
-                          agreeTerms,
-                          activeColor:
-                          blue,
-                          onChanged:
-                              (v) {
-                            setState(
-                                    () {
-                                  agreeTerms =
-                                  v!;
-                                });
-                          },
-                        ),
-                        Expanded(
-                          child:
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(
-                                top:
-                                10),
-                            child:
-                            RichText(
-                              text:
-                              TextSpan(
-                                style:
-                                const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 15,
-                                ),
-                                children: [
-                                  const TextSpan(
-                                      text:
-                                      "I agree to the "),
-                                  TextSpan(
-                                    text:
-                                    "Terms of Service",
-                                    style:
-                                    TextStyle(
-                                      color:
-                                      blue,
-                                      fontWeight:
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  const TextSpan(
-                                      text:
-                                      " and "),
-                                  TextSpan(
-                                    text:
-                                    "Privacy Policy",
-                                    style:
-                                    TextStyle(
-                                      color:
-                                      blue,
-                                      fontWeight:
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(
-                        height:
-                        20),
-
-                    /// BUTTON
-                    SizedBox(
-                      width: double
-                          .infinity,
-                      height: 58,
-                      child:
-                      ElevatedButton(
-                        onPressed:
-                        signUp,
-                        style:
-                        ElevatedButton.styleFrom(
-                          backgroundColor:
-                          blue,
-                          shape:
-                          RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(
-                                30),
-                          ),
-                        ),
-                        child:
-                        const Text(
-                          "Create Account  →",
-                          style:
-                          TextStyle(
-                            fontSize:
-                            20,
-                            color: Colors
-                                .white,
-                            fontWeight:
-                            FontWeight
-                                .bold,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(
-                        height:
-                        30),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -467,42 +203,49 @@ class _SignUpScreenState
 
   Widget title(String txt) {
     return Align(
-      alignment:
-      Alignment.centerLeft,
+      alignment: Alignment.centerLeft,
       child: Text(
         txt,
         style: TextStyle(
           color: blue,
-          fontWeight:
-          FontWeight.bold,
-          letterSpacing: 1,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  InputDecoration field(
-      String hint,
-      IconData icon, {
-        Widget? suffix,
-        String? counter,
-      }) {
+  InputDecoration field(String hint, IconData icon) {
     return InputDecoration(
       hintText: hint,
-      prefixIcon:
-      Icon(icon),
-      suffixIcon: suffix,
-      counterText: counter,
+      prefixIcon: Icon(icon),
       filled: true,
-      fillColor:
-      Colors.grey.shade100,
-      border:
-      OutlineInputBorder(
-        borderRadius:
-        BorderRadius.circular(
-            18),
-        borderSide:
-        BorderSide.none,
+      fillColor: Colors.grey.shade100,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(18),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
+
+  Widget button(String text, VoidCallback onTap) {
+    return SizedBox(
+      width: double.infinity,
+      height: 55,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
       ),
     );
   }
