@@ -13,7 +13,7 @@ FutureProvider<List<JobModel>>((ref) async {
   final response = await http.get(
     Uri.parse(ApiConstants.jobList),
   );
-
+print("responseJob ${jsonEncode(response.body)}");
   if (response.statusCode == 200) {
     final List data = jsonDecode(response.body);
 

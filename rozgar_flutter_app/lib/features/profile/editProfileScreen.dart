@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:rozgar_flutter_app/utils/ApiConstants.dart';
 
 import '../../helper/ImagePickerHelper.dart';
 import '../../sessionManager/SessionManager.dart';
@@ -67,7 +68,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       CircleAvatar(
                         radius: 62,
                         backgroundImage: selectedImage != null
-                            ?  FileImage(selectedImage!)
+                            // ?  FileImage(selectedImage!)
+                      ? NetworkImage(ApiConstants.urlUpload+"${SessionManager().profileImage}")
                             : const NetworkImage('https://i.pravatar.cc/150?img=32')
                         as ImageProvider,
                       ),
@@ -88,10 +90,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 28),
                 _label('CITY'),
-                _field(cityController),
+                _field(cityController,SessionManager().city),
                 const SizedBox(height: 18),
                 _label('STATE'),
-                _field(stateController),
+                _field(stateController,SessionManager().state),
                 const SizedBox(height: 18),
                 _label('JOB CATEGORY'),
                 _dropdown(),
@@ -155,10 +157,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     ),
   );
 
-  Widget _field(TextEditingController controller) {
+  Widget _field(TextEditingController controller,String? hint) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
+        hintText: hint,
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),

@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:rozgar_flutter_app/goRoute/AppRoute.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
+import '../../sessionManager/SessionManager.dart';
+
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -24,6 +26,29 @@ class ProfileScreen extends StatelessWidget {
               _documentsCard(),
               _menuCard('🛡️', 'Insurance'),
               _menuCard('🆘', 'SOS — I need help', isDanger: true),
+              InkWell(onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text("Logout"),
+                    content: const Text("Are you sure?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          SessionManager().clear();
+                          context.go(AppConstants.login);
+                        },
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  ),
+                );
+              },child: _menuCard('🚪', 'Logout', isDanger: true)),
               const SizedBox(height: 20),
             ],
           ),

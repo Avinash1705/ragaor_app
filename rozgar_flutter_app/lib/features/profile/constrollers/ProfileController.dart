@@ -46,6 +46,12 @@ class ProfileController {
       final jsonData = jsonDecode(responseBody);
 
       if (response.statusCode == 200 && jsonData['status'] == true) {
+        SessionManager().saveProfile(
+          city: city,
+          state: state,
+          experience: experience,
+          image: jsonData['image'], // from API
+        );
         return true;
       } else {
         throw Exception(jsonData['message']);

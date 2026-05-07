@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../homeScreen/HomeScreen.dart';
 import '../jobList/JobScreen.dart';
 import '../profile/profileScreen.dart';
 import '../skills/skillsScreen.dart';
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 1;
 
   final List<Widget> pages = const [
-    HomePlaceholder(),
+    Homescreen(),
     JobScreen(),
     SkillsPage(),
     ProfileScreen(),

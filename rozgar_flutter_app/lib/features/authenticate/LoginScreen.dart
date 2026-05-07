@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool hidePassword = true;
   final authController = LoginController();
   final session = SessionManager();
-
+  bool isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -35,19 +35,37 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-   loginUser(String phone,String pass) async {
-    final result = await authController.login(
-      phone: phone,
-      password: pass,
-    );
+  void loginUser(String phone, String pass) async {
+    setState(() {
+      isLoading = true;
+    });
 
-    if (result != null && result.status) {
-      print("Token: ${result.token}");
-      print("User: ${result.data.username}");
-      session.saveLogin(result);
-      context.go(AppConstants.mainScreen);
-    } else {
-      print("Login failed");
+    try {
+      final result = await authController.login(
+        phone: phone,
+        password: pass,
+      );
+
+      if (result != null && result.status) {
+        print("Token: ${result.token}");
+        print("User: ${result.data.username}");
+
+        session.saveLogin(result);
+
+        context.go(AppConstants.mainScreen);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login failed")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -178,7 +196,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const EdgeInsets.symmetric(
                   horizontal: 24,
                 ),
-                child: Column(
+                child:isLoading ?const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
+                    strokeWidth: 2,
+                  ),
+                ): Column(
                   crossAxisAlignment:
                   CrossAxisAlignment
                       .start,
@@ -307,10 +332,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             value
                                 .isEmpty) {
                           return "Enter password";
-                        } else if (value
+                        }
+                        else if (value
                             .length <
-                            6) {
-                          return "Minimum 6 characters";
+                            3) {
+                          return "Minimum 4 characters";
                         }
                         return null;
                       },

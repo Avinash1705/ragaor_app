@@ -39,7 +39,7 @@ class JobScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: Text(job.name,
+                                child: Text(job.title,
                                     style: const TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold)),
@@ -67,10 +67,10 @@ class JobScreen extends ConsumerWidget {
                           Row(children: [
                             const Icon(Icons.calendar_month, size: 18),
                             const SizedBox(width: 4),
-                            Text('${job.days} days'),
+                            Text('${job.duration} days'),
                           ]),
                           const SizedBox(height: 12),
-                          Text('₹${job.income}/month',
+                          Text('₹${job.salary}/month',
                               style: const TextStyle(
                                   fontSize: 28,
                                   color: Colors.green,
