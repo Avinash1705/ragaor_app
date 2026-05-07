@@ -231,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       InputDecoration(
                         counterText: "",
                         hintText:
-                        "9876543210",
+                        "98******10",
                         prefixIcon:
                         const Icon(
                           Icons.phone,

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rozgar_flutter_app/features/authenticate/controllers/SendOtpController.dart';
+import 'package:rozgar_flutter_app/utils/AppConstants.dart';
+
+import 'controllers/SignupController.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -25,21 +30,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // 👉 CALL API HERE
     // await Api.sendOtp(mobileController.text);
+    SendOtpController sendOtpController = new SendOtpController();
+    final result = await sendOtpController.sendOtp(
+      mobileController.text,
+    );
+    if (result["status"] == true) {
+      snack(result["message"]);
 
+      setState(() {
+        /*asdasdas*/
+        // otp =
+        print("signUpDD ${result}");
+        currentStep = 2;
+      });
+    } else {
+      snack(result["message"]);
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("OTP Sent")),
     );
-
-    setState(() {
-      currentStep = 2;
-    });
   }
-
+  void snack(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+      ),
+    );
+  }
   // 🔥 STEP 2 → VERIFY OTP + SIGNUP
   void verifyOtp() async {
     String otp = otpController.text.trim();
 
-    if (otp.length != 6) {
+    if (otp.length != 4) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Enter valid OTP")),
       );
@@ -58,14 +80,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
       //   mobileController.text,
       //   passwordController.text,
       // );
+      SignupController signupController = new SignupController();
+      final result =
+      await signupController.signup(
+        username: nameController.text,
+        phone: mobileController.text,
+        password: passwordController.text,
+        otp: otpController.text,
+      );
 
+      if (result["status"] == true) {
+        context.go(AppConstants.login);
+        print(result["message"]);
+
+      } else {
+
+        print(result["message"]);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Signup Successful")),
       );
 
-      setState(() {
-        currentStep = 3;
-      });
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Invalid OTP")),
