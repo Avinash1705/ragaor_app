@@ -16,7 +16,10 @@ class ApiConstants {
   static String changePassword = "$baseUrl/api/change_password.php";
 
   /*SignUp*/
-
   static String signUp = "$baseUrl/api/signup.php";
+
+  /*company profile */
+
+  static String companyProfileUpdate = "$baseUrl/api/update_company_profile.php";
 
 }

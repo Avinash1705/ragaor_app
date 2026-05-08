@@ -12,6 +12,7 @@ class SignupController {
     required String phone,
     required String password,
     required String otp,
+    required int type
   }) async {
 
     try {
@@ -28,6 +29,7 @@ class SignupController {
           "phone": phone,
           "password": password,
           "otp": otp,
+          "type": type
         }),
       );
 

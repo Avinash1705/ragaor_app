@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rozgar_flutter_app/features/authenticate/controllers/CompanyProfileController.dart';
 import 'package:rozgar_flutter_app/features/authenticate/controllers/SendOtpController.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
@@ -21,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final otpController = TextEditingController();
 
   int currentStep = 1;
-
+  int selectedRole = 0;
   final blue = const Color(0xff0d5cff);
 
   // 🔥 STEP 1 → SEND OTP
@@ -87,10 +88,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         phone: mobileController.text,
         password: passwordController.text,
         otp: otpController.text,
+        type: selectedRole
       );
 
       if (result["status"] == true) {
-        context.go(AppConstants.login);
+
+        if(selectedRole  == 1){
+          setState(() {
+            currentStep = 3;
+          });
+        }
+        else context.go(AppConstants.login);
         print(result["message"]);
 
       } else {
@@ -99,12 +107,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Signup Successful")),
-      );
-
-
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid OTP")),
       );
     }
   }
@@ -136,6 +138,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 if (currentStep == 1)
                   Column(
                     children: [
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: RadioListTile<int>(
+                              value: 0,
+                              groupValue: selectedRole,
+
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedRole = value!;
+                                  print(selectedRole);
+                                });
+                              },
+
+                              title: const Text("User"),
+                            ),
+                          ),
+
+                          Expanded(
+                            child: RadioListTile<int>(
+                              value: 1,
+                              groupValue: selectedRole,
+
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedRole = value!;
+                                  print(selectedRole);
+                                });
+                              },
+
+                              title: const Text("Company"),
+                            ),
+                          ),
+                        ],
+                      ),
                       title("FULL NAME"),
                       TextFormField(
                         controller: nameController,
@@ -164,7 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         obscureText: true,
                         decoration: field("Password", Icons.lock),
                         validator: (v) =>
-                        v!.length < 6 ? "Min 6 chars" : null,
+                        v!.length < 4 ? "Min 4 chars" : null,
                       ),
 
                       const SizedBox(height: 30),
@@ -216,19 +254,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 /// 🔥 STEP 3 → SUCCESS
                 if (currentStep == 3)
-                  Column(
-                    children: const [
-                      Icon(Icons.check_circle,
-                          color: Colors.green, size: 80),
-                      SizedBox(height: 20),
-                      Text(
-                        "Account Created Successfully!",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                  build3()
               ],
             ),
           ),
@@ -236,7 +262,177 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+  Widget build3(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
 
+        Center(
+          child: Column(
+            children: const [
+
+              Icon(
+                Icons.business_center,
+                color: Colors.blue,
+                size: 80,
+              ),
+
+              SizedBox(height: 20),
+
+              Text(
+                "Complete Company Profile",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 30),
+
+        /// LOGO PICKER
+        Container(
+          padding: const EdgeInsets.all(18),
+
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(18),
+          ),
+
+          child: Row(
+            children: [
+
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.blue.shade100,
+                child: const Icon(
+                  Icons.image,
+                  size: 30,
+                  color: Colors.blue,
+                ),
+              ),
+
+              const SizedBox(width: 18),
+
+              Flexible(
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
+                  children: const [
+
+                    Text(
+                      "Upload Company Logo",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 4),
+
+                    Text(
+                      "PNG, JPG supported",
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        /// COMPANY NAME
+        TextField(
+          decoration: field(
+            "Company Name",
+            Icons.business,
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        /// COMPANY TYPE
+        TextField(
+          decoration: field(
+            "Company Type",
+            Icons.category,
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        /// CITY
+        TextField(
+          decoration: field(
+            "City",
+            Icons.location_city,
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        /// STATE
+        TextField(
+          decoration: field(
+            "State",
+            Icons.map,
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        /// GST
+        TextField(
+          decoration: field(
+            "GST Number",
+            Icons.receipt_long,
+          ),
+        ),
+        //
+        const SizedBox(height: 18),
+
+        const SizedBox(height: 30),
+
+        /// SAVE BUTTON
+        SizedBox(
+          width: double.infinity,
+          height: 58,
+
+          child: ElevatedButton(
+            onPressed: () {
+              CompanyProfileController companyController = new CompanyProfileController();
+              // companyController.updateCompanyProfile(userId: userId, companyName: companyName, companyType: companyType, city: city, state: state, gst: gst, companyLogo: companyLogo)
+            },
+
+            style:
+            ElevatedButton.styleFrom(
+              backgroundColor: blue,
+
+              shape:
+              RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(30),
+              ),
+            ),
+
+            child: const Text(
+              "Save Company Profile",
+
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   Widget title(String txt) {
     return Align(
       alignment: Alignment.centerLeft,

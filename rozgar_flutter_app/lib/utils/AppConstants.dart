@@ -16,8 +16,9 @@ class AppConstants {
   static String editProfile = "/editProfile";
   static String skills = "/skills";
 
+/*Emplyoer*/
 
-
+  static String dashboard = "/dashboard";
 
 }
 

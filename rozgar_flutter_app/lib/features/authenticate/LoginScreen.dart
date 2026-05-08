@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rozgar_flutter_app/goRoute/AppRoute.dart';
@@ -49,9 +51,13 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result != null && result.status) {
         print("Token: ${result.token}");
         print("User: ${result.data.username}");
-
+        // print("LOginPrint ${jsonEncode(result)}");
         session.saveLogin(result);
-
+        if(result.data.type == "1"){
+          //emplyoer redirect
+          context.go(AppConstants.dashboard);
+        }
+        else
         context.go(AppConstants.mainScreen);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

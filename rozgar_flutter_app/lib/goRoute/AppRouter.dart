@@ -5,6 +5,7 @@ import 'package:rozgar_flutter_app/features/profile/profileScreen.dart';
 import 'package:rozgar_flutter_app/features/skills/skillsScreen.dart';
 import 'package:rozgar_flutter_app/utils/AppConstants.dart';
 
+import '../employer/features/dashboard/DashboardScreen.dart';
 import '../features/authenticate/LoginScreen.dart';
 import '../features/authenticate/ResetPasswordScreen.dart';
 import '../features/authenticate/SignUpScreen.dart';
@@ -80,7 +81,11 @@ class AppRouter {
           ),
         ]
       ),
+    
+      ///Dashboard
+      GoRoute(path: AppConstants.dashboard,builder: (context,state) => DashboardScreen(),routes: [
 
+      ])
 
       
 
