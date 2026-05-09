@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 15),
 
                     const Text(
-                      "Sign in to continue your job search",
+                      "Sign in to continue your jobPost search",
                       style: TextStyle(
                         color:
                         Colors.white70,

@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Home',
+              label: 'home',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.work_outline),
@@ -88,7 +88,7 @@ class HomePlaceholder extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Text(
-          'Home Screen',
+          'home Screen',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
       ),
