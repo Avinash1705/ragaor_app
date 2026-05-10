@@ -2,7 +2,6 @@
 
 class ApiConstants {
 
-  // static String baseUrl = "http://localhost:8080";
   static String baseUrl = "https://teal-donkey-558583.hostingersite.com";
   static String urlUpload = "$baseUrl/uploads/";
   static String jobList = "$baseUrl/api/jobs.php";
@@ -19,7 +18,7 @@ class ApiConstants {
   static String signUp = "$baseUrl/api/signup.php";
 
   /*company profile */
-
   static String companyProfileUpdate = "$baseUrl/api/update_company_profile.php";
+  static String appliedJob = "$baseUrl/api/applications.php";
 
 }

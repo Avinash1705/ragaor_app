@@ -39,7 +39,7 @@ class User {
       id: json['id'],
       username: json['username'],
       phone: json['phone'],
-      type: json['type'],
+        type: json['type'],
     );
   }
 }
